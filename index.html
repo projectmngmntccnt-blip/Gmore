@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Directory & Tools Hub</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Minimal Header */
+        .header {
+            text-align: center;
+            margin: 20px 0 25px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Live Search Bar */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 20px;
+            display: flex;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #007bff;
+        }
+
+        /* Filter Tabs (Horizontal Scroll Bar) */
+        .filter-wrapper {
+            max-width: 1200px;
+            margin: 0 auto 25px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-container {
+            display: inline-flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            background: #ffffff;
+            border: 1px solid #dcdcdc;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #444;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #007bff;
+            color: #ffffff;
+            border-color: #007bff;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+
+        /* Card Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #eef0f2;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-top {
+            margin-bottom: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+            color: #222;
+        }
+
+        /* Badges */
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        .badge.external {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .badge.native {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .card p {
+            font-size: 0.88rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .card-btn {
+            text-decoration: none;
+            background: #007bff;
+            color: #ffffff;
+            text-align: center;
+            padding: 9px 0;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s ease;
+        }
+
+        .card-btn:hover {
+            background: #0056b3;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #777;
+            font-size: 1.1rem;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Master Directory & Tools Hub</h1>
+        <p>Sabhi zaroori websites aur tools ek hi jagah par</p>
+    </div>
+
+    <!-- Live Search Bar -->
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search website, portal ya tool type karein..." onkeyup="filterCards()">
+    </div>
+
+    <!-- Filter Buttons Bar -->
+    <div class="filter-wrapper">
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="setCategory('all', this)">All</button>
+            <button class="filter-btn" onclick="setCategory('govt', this)">Government & Services</button>
+            <button class="filter-btn" onclick="setCategory('jobs', this)">Jobs & Recruitments</button>
+            <button class="filter-btn" onclick="setCategory('education', this)">Education & Knowledge</button>
+            <button class="filter-btn" onclick="setCategory('news', this)">News</button>
+            <button class="filter-btn" onclick="setCategory('tools', this)">Online Tools</button>
+            <button class="filter-btn" onclick="setCategory('finance', this)">Finance & Banking</button>
+            <button class="filter-btn" onclick="setCategory('health', this)">Health & Wellness</button>
+            <button class="filter-btn" onclick="setCategory('tech', this)">Technology & Coding</button>
+            <button class="filter-btn" onclick="setCategory('business', this)">Business & Startup Hub</button>
+            <button class="filter-btn" onclick="setCategory('shopping', this)">Shopping & E-Commerce</button>
+            <button class="filter-btn" onclick="setCategory('travel', this)">Travel & Ticketing</button>
+            <button class="filter-btn" onclick="setCategory('entertainment', this)">Entertainment & Media</button>
+        </div>
+    </div>
+
+    <!-- Cards Dynamic Render Container -->
+    <div class="grid-container" id="cardsGrid"></div>
+
+    <!-- Dynamic JavaScript Engine -->
+    <script>
+        // 12 Core Categories ka Array Data
+        const toolsData = [
+            // Government
+            { title: "e-District Portal", category: "govt", badge: "External", desc: "Local state certificates (PRTC, Income, Caste, Marriage).", link: "https://edistrict.gov.in" },
+            { title: "UIDAI (Aadhaar)", category: "govt", badge: "External", desc: "Aadhaar card download, status check aur details update.", link: "https://uidai.gov.in" },
+            { title: "Voter Portal (NVSP)", category: "govt", badge: "External", desc: "Voter ID apply, corrections aur electoral roll search.", link: "https://voters.eci.gov.in" },
+
+            // Jobs
+            { title: "Sarkari Result", category: "jobs", badge: "External", desc: "Latest government job notifications, admit cards aur results.", link: "https://www.sarkariresult.com" },
+            { title: "SSC Portal", category: "jobs", badge: "External", desc: "Staff Selection Commission recruitment notifications (CGL, CHSL, GD).", link: "https://ssc.gov.in" },
+
+            // Education
+            { title: "NCERT Books", category: "education", badge: "External", desc: "Class 1 se 12 tak ki sabhi NCERT textbooks aur solution PDFs.", link: "https://ncert.nic.in" },
+            { title: "Constitution of India", category: "education", badge: "External", desc: "Bare acts, legal articles, constitutional amendments text.", link: "https://legislative.gov.in" },
+
+            // News
+            { title: "Press Information Bureau", category: "news", badge: "External", desc: "Official Government press releases aur real-time updates.", link: "https://pib.gov.in" },
+
+            // Online Tools (Including Native Tool Blueprint)
+            { title: "PDF Merger", category: "tools", badge: "External", desc: "Multiple PDF files ko combine aur single file mein merge karein.", link: "https://www.ilovepdf.com" },
+            { title: "Passport Photo Maker", category: "tools", badge: "In-House", desc: "Standard passport size grid crop aur print scaling layout creator.", link: "/tools/passport-maker.php" },
+
+            // Finance
+            { title: "GST Portal", category: "finance", badge: "External", desc: "Official GST tax registration, return filing aur taxpayer search.", link: "https://www.gst.gov.in" },
+            { title: "EPFO Portal", category: "finance", badge: "External", desc: "EPF balance check, UAN activation aur passbook view.", link: "https://www.epfindia.gov.in" },
+
+            // Health
+            { title: "eSanjeevani Teleconsultation", category: "health", badge: "External", desc: "Free online doctor consultation portal by Ministry of Health.", link: "https://esanjeevani.mohfw.gov.in" },
+
+            // Technology & Coding
+            { title: "GitHub", category: "tech", badge: "External", desc: "Source code repository hosting aur open-source software collaboration.", link: "https://github.com" },
+            { title: "MDN Web Docs", category: "tech", badge: "External", desc: "HTML, CSS, JavaScript aur Web APIs ki complete reference documentation.", link: "https://developer.mozilla.org" },
+
+            // Business
+            { title: "Udyam Registration", category: "business", badge: "External", desc: "Official MSME Udyam registration portal for small businesses.", link: "https://udyamregistration.gov.in" },
+            { title: "Meesho Seller Panel", category: "business", badge: "External", desc: "Seller login, catalog upload, inventory & order dispatch tracking.", link: "https://supplier.meesho.com" },
+
+            // Shopping
+            { title: "Flipkart", category: "shopping", badge: "External", desc: "Electronics, household appliances aur daily product store.", link: "https://www.flipkart.com" },
+
+            // Travel
+            { title: "IRCTC Train Booking", category: "travel", badge: "External", desc: "Train reservation, Tatkal ticket booking aur live PNR status.", link: "https://www.irctc.co.in" },
+            { title: "ConfirmTkt", category: "travel", badge: "External", desc: "Train seat availability, waitlist prediction aur alternate train route planning.", link: "https://www.confirmtkt.com" },
+
+            // Entertainment
+            { title: "YouTube", category: "entertainment", badge: "External", desc: "Free video streaming, tutorials, podcasts aur educational streams.", link: "https://www.youtube.com" }
+        ];
+
+        let currentCategory = 'all';
+
+        // Display Cards Logic
+        function renderCards(data) {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            if (data.length === 0) {
+                grid.innerHTML = '<div class="no-results">Koi link ya tool nahi mila!</div>';
+                return;
+            }
+
+            data.forEach(item => {
+                const badgeClass = item.badge === 'In-House' ? 'native' : 'external';
+                const targetAttr = item.badge === 'External' ? 'target="_blank"' : '';
+
+                const cardHTML = `
+                    <div class="card">
+                        <div class="card-top">
+                            <div class="card-header">
+                                <h3>${item.title}</h3>
+                                <span class="badge ${badgeClass}">${item.badge}</span>
+                            </div>
+                            <p>${item.desc}</p>
+                        </div>
+                        <a href="${item.link}" ${targetAttr} class="card-btn">Open Link</a>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // Category Filter
+        function setCategory(cat, btnElement) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            filterCards();
+        }
+
+        // Combined Live Search & Category Filter
+        function filterCards() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            const filtered = toolsData.filter(item => {
+                const matchesCategory = (currentCategory === 'all' || item.category === currentCategory);
+                const matchesSearch = item.title.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query);
+                return matchesCategory && matchesSearch;
+            });
+
+            renderCards(filtered);
+        }
+
+        // Initial Load Render
+        renderCards(toolsData);
+    </script>
+</body>
+</html>
